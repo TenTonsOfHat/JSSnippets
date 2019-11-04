@@ -12,8 +12,8 @@ function LoadRegions(){
     }
     $.each($(".edit-region"), function(i,v) {
         var region = $(v);
-        var input = region.children('input').first().val(); 
-        if (input != "") {
+        var input = region.children('input:enabled').first().val(); 
+        if (input != null && input != "") {
             regions.push(region)
         }
     }) 
