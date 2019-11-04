@@ -1,6 +1,6 @@
 
 var regions = [];  
-var entryName = "Arkansas"
+var entryName = ""
 var timeoutWait = 100;
 var timeSheetPage = "capspire.mavenlink.com/timesheets"
 
@@ -12,17 +12,27 @@ function LoadRegions(){
     }
     $.each($(".edit-region"), function(i,v) {
         var region = $(v);
-        var input = region.children('input:enabled').first().val(); 
-        if (input != null && input != "") {
+        var input = region.children('input').first().val(); 
+        if (input != "") {
             regions.push(region)
         }
     }) 
+
+
     console.log(regions.length)
-    if(EditOpen()){
-        ClickSave();
-    }else {
-        OpenInputForRegion();
+
+    if(regions.length > 0){
+        entryName = prompt("Please enter your default location.", ""); 
+        if(entryName != null && entryName.length > 0){
+            if(EditOpen()){
+                ClickSave();
+            }else {
+                OpenInputForRegion();
+            } 
+        }
+
     }
+
     
 } 
 
@@ -45,14 +55,35 @@ function OpenSelect(){
     WaitFor(DropdownContentOpen, ClickEntry)
 } 
 
+
+
 function ClickEntry() {
+    var foundLocation = true;
     var locationSelect = $('.edit-box').first().find(".location-select-region");
     $.each(locationSelect, function(i,v){
-            var dropdownContent = $(v).find('.selectize-dropdown-content').first().find("[data-value='"+entryName+"']").first() 
-            dropdownContent.click();
+            var currentValue = $(v).find('#edit-box-location-select').first().val(); 
+            if(currentValue.toLowerCase() != entryName.toLowerCase()){
+               var dropdownContent = $(v)
+                .find('.selectize-dropdown-content').first()
+                .find("[data-value]").filter(function(){return $(this).attr('data-value').toLowerCase() == entryName.toLowerCase();})
+                .first();
+                
+                if(dropdownContent.length >0){
+                    dropdownContent.click();
+                }else {
+                    alert("Cound not find location equal to: " + entryName)
+                    foundLocation = false;
+                    return false;
+                }
+                 
+            }
+
     })
 
-    WaitFor(null, ClickSave);
+    if(foundLocation){
+        WaitFor(null, ClickSave);
+    }
+    
     
 }  
 
