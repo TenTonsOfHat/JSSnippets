@@ -1,6 +1,6 @@
 
 var regions = [], selectRegions = [];  
-var entryName = "Arkansas"
+var entryName = ""
 var timeoutWait = 100;
 var timeSheetPage = "capspire.mavenlink.com/timesheets"
 
@@ -12,8 +12,9 @@ function LoadRegions(){
     }
     $.each($(".edit-region"), function(i,v) {
         var region = $(v);
-        var input = region.children('input').first().val(); 
-        if (input != "") {
+        var input = region.children('input:enabled').first();
+        var inputValue  = input.val()
+        if (input.length > 0 && inputValue != "") {
             regions.push(region)
         }
     }) 
